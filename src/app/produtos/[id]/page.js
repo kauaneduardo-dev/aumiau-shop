@@ -1,4 +1,5 @@
 import { products } from "../../../data/products";
+import AddToCartButton from "../../../components/addToCartButton";
 
 export default async function ProductDetailsPage({ params }) {
   const { id } = await params;
@@ -8,7 +9,10 @@ export default async function ProductDetailsPage({ params }) {
   if (!product) {
     return (
       <main className="min-h-screen bg-orange-50 px-8 py-10 text-gray-900">
-        <a href="/produtos" className="text-sm text-gray-500 hover:text-orange-500">
+        <a
+          href="/produtos"
+          className="text-sm text-gray-500 hover:text-orange-500"
+        >
           ← Voltar para produtos
         </a>
 
@@ -26,7 +30,10 @@ export default async function ProductDetailsPage({ params }) {
   return (
     <main className="min-h-screen bg-orange-50 text-gray-900">
       <header className="border-b border-orange-200 bg-white px-8 py-6">
-        <a href="/produtos" className="text-sm text-gray-500 hover:text-orange-500">
+        <a
+          href="/produtos"
+          className="text-sm text-gray-500 hover:text-orange-500"
+        >
           ← Voltar para produtos
         </a>
 
@@ -57,18 +64,14 @@ export default async function ProductDetailsPage({ params }) {
             {product.name}
           </h2>
 
-          <p className="mt-4 text-gray-600">
-            {product.description}
-          </p>
+          <p className="mt-4 text-gray-600">{product.description}</p>
 
           <p className="mt-6 text-4xl font-bold text-orange-500">
             R$ {product.price.toFixed(2).replace(".", ",")}
           </p>
 
           <div className="mt-8 flex flex-col gap-4 sm:flex-row">
-            <button className="rounded-lg bg-orange-500 px-6 py-3 font-semibold text-white hover:bg-orange-600">
-              Adicionar ao carrinho
-            </button>
+            <AddToCartButton product={product} />
 
             <a
               href="/produtos"

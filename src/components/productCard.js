@@ -16,9 +16,7 @@ export default function ProductCard({ product }) {
           {product.name}
         </h2>
 
-        <p className="mt-2 text-sm text-gray-600">
-          {product.description}
-        </p>
+        <p className="mt-2 text-sm text-gray-600">{product.description}</p>
 
         <p className="mt-4 text-2xl font-bold text-orange-500">
           R$ {product.price.toFixed(2).replace(".", ",")}

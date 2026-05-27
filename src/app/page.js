@@ -13,7 +13,7 @@ export default function Home() {
             Produtos
           </a>
 
-          <a href="#" className="hover:text-orange-500">
+          <a href="/carrinho" className="hover:text-orange-500">
             Carrinho
           </a>
         </nav>
@@ -58,14 +58,16 @@ export default function Home() {
         <div className="rounded-xl border border-orange-200 bg-white p-6 shadow-sm">
           <h3 className="mb-2 text-xl font-bold">Produtos para cães</h3>
           <p className="text-gray-600">
-            Coleiras, camas, brinquedos, comedouros e acessórios para deixar seu cachorro mais feliz.
+            Coleiras, camas, brinquedos, comedouros e acessórios para deixar seu
+            cachorro mais feliz.
           </p>
         </div>
 
         <div className="rounded-xl border border-orange-200 bg-white p-6 shadow-sm">
           <h3 className="mb-2 text-xl font-bold">Produtos para gatos</h3>
           <p className="text-gray-600">
-            Arranhadores, brinquedos, varinhas, casinhas e itens para conforto dos gatos.
+            Arranhadores, brinquedos, varinhas, casinhas e itens para conforto
+            dos gatos.
           </p>
         </div>
 
