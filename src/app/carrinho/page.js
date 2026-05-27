@@ -164,9 +164,12 @@ export default function CartPage() {
                 R$ {total.toFixed(2).replace(".", ",")}
               </p>
 
-              <button className="mt-6 w-full rounded-lg bg-orange-500 px-6 py-3 font-semibold text-white hover:bg-orange-600">
+              <a
+                href="/checkout"
+                className="mt-6 block w-full rounded-lg bg-orange-500 px-6 py-3 text-center font-semibold text-white hover:bg-orange-600"
+              >
                 Finalizar compra
-              </button>
+              </a>
 
               <button
                 onClick={clearCart}
