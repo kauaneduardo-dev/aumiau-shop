@@ -5,7 +5,7 @@ export const products = [
     price: 79.9,
     image: "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=600",
     description:
-      "Ajuda cães e gatos a beberem mais água durante o dia, mantendo a água em circulação.",
+      "Ajuda cães e gatos a beberem mais água durante o dia com circulação constante.",
     category: "Bem-estar",
   },
   {
@@ -14,7 +14,7 @@ export const products = [
     price: 149.9,
     image: "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=600",
     description:
-      "Cama confortável para descanso, ideal para pets que precisam de mais apoio e conforto.",
+      "Cama confortável para o descanso do pet, ideal para cães e gatos.",
     category: "Conforto",
   },
   {
@@ -23,16 +23,16 @@ export const products = [
     price: 119.9,
     image: "https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=600",
     description:
-      "Produto ideal para gatos brincarem, descansarem e evitarem arranhar móveis da casa.",
+      "Ideal para gatos brincarem, descansarem e evitarem arranhar móveis.",
     category: "Gatos",
   },
   {
     id: 4,
     name: "Comedouro Lento",
     price: 39.9,
-    image: "https://images.unsplash.com/photo-1601758125946-6ec2ef64daf8?w=600",
+    image: "https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=600",
     description:
-      "Ajuda o pet a comer mais devagar, evitando desconforto e melhorando a alimentação.",
+      "Ajuda o pet a comer mais devagar e melhora a rotina de alimentação.",
     category: "Alimentação",
   },
   {

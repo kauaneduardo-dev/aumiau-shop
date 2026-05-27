@@ -1,6 +1,6 @@
 export default function ProductCard({ product }) {
   return (
-    <div className="overflow-hidden rounded-xl border border-orange-200 bg-white shadow-sm">
+    <div className="overflow-hidden rounded-xl border border-orange-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-md">
       <img
         src={product.image}
         alt={product.name}
@@ -16,7 +16,9 @@ export default function ProductCard({ product }) {
           {product.name}
         </h2>
 
-        <p className="mt-2 text-sm text-gray-600">{product.description}</p>
+        <p className="mt-2 text-sm text-gray-600">
+          {product.description}
+        </p>
 
         <p className="mt-4 text-2xl font-bold text-orange-500">
           R$ {product.price.toFixed(2).replace(".", ",")}
