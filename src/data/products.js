@@ -8,6 +8,9 @@ export const products = [
     description:
       "Ajuda cães e gatos a beberem mais água durante o dia com circulação constante.",
     category: "Bem-estar",
+    audience: "Cães e gatos",
+    featured: true,
+    stock: 12,
   },
   {
     id: 2,
@@ -18,6 +21,9 @@ export const products = [
     description:
       "Cama confortável para o descanso do pet, ideal para cães e gatos.",
     category: "Conforto",
+    audience: "Cães e gatos",
+    featured: true,
+    stock: 8,
   },
   {
     id: 3,
@@ -28,6 +34,9 @@ export const products = [
     description:
       "Ideal para gatos brincarem, descansarem e evitarem arranhar móveis.",
     category: "Gatos",
+    audience: "Gatos",
+    featured: true,
+    stock: 10,
   },
   {
     id: 4,
@@ -38,6 +47,9 @@ export const products = [
     description:
       "Ajuda o pet a comer mais devagar e melhora a rotina de alimentação.",
     category: "Alimentação",
+    audience: "Cães e gatos",
+    featured: false,
+    stock: 16,
   },
   {
     id: 5,
@@ -48,6 +60,9 @@ export const products = [
     description:
       "Coleira com identificação para deixar o passeio mais seguro e estiloso.",
     category: "Acessórios",
+    audience: "Cães",
+    featured: false,
+    stock: 20,
   },
   {
     id: 6,
@@ -58,5 +73,8 @@ export const products = [
     description:
       "Brinquedo divertido para gatos gastarem energia e se movimentarem mais.",
     category: "Brinquedos",
+    audience: "Gatos",
+    featured: false,
+    stock: 18,
   },
 ];

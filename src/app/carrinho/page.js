@@ -1,26 +1,26 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import SiteHeader from "@/components/siteHeader";
+import { useCart } from "@/hooks/useCart";
+import {
+  getCartTotal,
+  getCartTotalItems,
+  saveCart,
+} from "@/lib/cart";
+import { formatCurrency } from "@/lib/format";
 
 export default function CartPage() {
-  const [cart, setCart] = useState([]);
+  const cart = useCart();
 
-  useEffect(() => {
-    const savedCart = localStorage.getItem("aumiau-cart");
-
-    if (savedCart) {
-      setCart(JSON.parse(savedCart));
-    }
-  }, []);
-
-  function saveCart(updatedCart) {
-    setCart(updatedCart);
-    localStorage.setItem("aumiau-cart", JSON.stringify(updatedCart));
+  function updateCart(updatedCart) {
+    saveCart(updatedCart);
   }
 
   function removeItem(id) {
     const updatedCart = cart.filter((item) => item.id !== id);
-    saveCart(updatedCart);
+    updateCart(updatedCart);
   }
 
   function increaseQuantity(id) {
@@ -30,10 +30,10 @@ export default function CartPage() {
             ...item,
             quantity: item.quantity + 1,
           }
-        : item
+          : item
     );
 
-    saveCart(updatedCart);
+    updateCart(updatedCart);
   }
 
   function decreaseQuantity(id) {
@@ -48,38 +48,31 @@ export default function CartPage() {
       )
       .filter((item) => item.quantity > 0);
 
-    saveCart(updatedCart);
+    updateCart(updatedCart);
   }
 
   function clearCart() {
-    saveCart([]);
+    updateCart([]);
   }
 
-  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-
-  const total = cart.reduce((sum, item) => {
-    return sum + item.price * item.quantity;
-  }, 0);
+  const totalItems = getCartTotalItems(cart);
+  const total = getCartTotal(cart);
 
   return (
     <main className="min-h-screen bg-orange-50 text-gray-900">
-      <header className="border-b border-orange-200 bg-white px-8 py-6">
-        <a href="/" className="text-sm text-gray-500 hover:text-orange-500">
-          ← Voltar para início
-        </a>
+      <SiteHeader backHref="/produtos" backLabel="Continuar comprando" />
 
-        <h1 className="mt-4 text-3xl font-bold text-orange-500">
+      <section className="px-5 py-10 sm:px-8">
+        <p className="font-semibold text-teal-700">Seu pedido</p>
+        <h1 className="mt-1 text-3xl font-bold text-orange-500">
           Carrinho de compras
         </h1>
-
-        <p className="mt-2 text-gray-600">
-          Veja os produtos adicionados na AuMiau Shop.
+        <p className="mt-2 max-w-2xl text-gray-600">
+          Revise os produtos adicionados antes de finalizar.
         </p>
-      </header>
 
-      <section className="px-8 py-10">
         {cart.length === 0 ? (
-          <div className="rounded-xl border border-orange-200 bg-white p-8 text-center shadow-sm">
+          <div className="mt-8 rounded-lg border border-orange-200 bg-white p-8 text-center shadow-sm">
             <h2 className="text-2xl font-bold text-gray-900">
               Seu carrinho está vazio
             </h2>
@@ -88,26 +81,30 @@ export default function CartPage() {
               Adicione um produto para continuar.
             </p>
 
-            <a
+            <Link
               href="/produtos"
               className="mt-6 inline-block rounded-lg bg-orange-500 px-6 py-3 font-semibold text-white hover:bg-orange-600"
             >
               Ver produtos
-            </a>
+            </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+          <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-3">
             <div className="space-y-4 lg:col-span-2">
               {cart.map((item) => (
                 <div
                   key={item.id}
-                  className="flex flex-col gap-4 rounded-xl border border-orange-200 bg-white p-4 shadow-sm md:flex-row"
+                  className="flex flex-col gap-4 rounded-lg border border-orange-200 bg-white p-4 shadow-sm md:flex-row"
                 >
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="h-32 w-full rounded-lg object-cover md:w-40"
-                  />
+                  <div className="relative h-32 w-full overflow-hidden rounded-lg bg-orange-100 md:w-40">
+                    <Image
+                      src={item.image}
+                      alt={item.name}
+                      fill
+                      sizes="(min-width: 768px) 160px, 100vw"
+                      className="object-cover"
+                    />
+                  </div>
 
                   <div className="flex flex-1 flex-col justify-between">
                     <div>
@@ -116,14 +113,15 @@ export default function CartPage() {
                       </h2>
 
                       <p className="mt-1 font-bold text-orange-500">
-                        R$ {item.price.toFixed(2).replace(".", ",")}
+                        {formatCurrency(item.price)}
                       </p>
                     </div>
 
                     <div className="mt-4 flex flex-wrap items-center gap-3">
                       <button
                         onClick={() => decreaseQuantity(item.id)}
-                        className="rounded-lg border border-orange-300 px-3 py-1 font-bold text-orange-600 hover:bg-orange-100"
+                        className="h-9 w-9 rounded-lg border border-orange-300 font-bold text-orange-600 hover:bg-orange-100"
+                        aria-label={`Diminuir quantidade de ${item.name}`}
                       >
                         -
                       </button>
@@ -134,7 +132,8 @@ export default function CartPage() {
 
                       <button
                         onClick={() => increaseQuantity(item.id)}
-                        className="rounded-lg border border-orange-300 px-3 py-1 font-bold text-orange-600 hover:bg-orange-100"
+                        className="h-9 w-9 rounded-lg border border-orange-300 font-bold text-orange-600 hover:bg-orange-100"
+                        aria-label={`Aumentar quantidade de ${item.name}`}
                       >
                         +
                       </button>
@@ -151,7 +150,7 @@ export default function CartPage() {
               ))}
             </div>
 
-            <aside className="h-fit rounded-xl border border-orange-200 bg-white p-6 shadow-sm">
+            <aside className="h-fit rounded-lg border border-orange-200 bg-white p-6 shadow-sm">
               <h2 className="text-2xl font-bold text-gray-900">
                 Resumo do pedido
               </h2>
@@ -161,15 +160,15 @@ export default function CartPage() {
               </p>
 
               <p className="mt-4 text-3xl font-bold text-orange-500">
-                R$ {total.toFixed(2).replace(".", ",")}
+                {formatCurrency(total)}
               </p>
 
-              <a
+              <Link
                 href="/checkout"
                 className="mt-6 block w-full rounded-lg bg-orange-500 px-6 py-3 text-center font-semibold text-white hover:bg-orange-600"
               >
                 Finalizar compra
-              </a>
+              </Link>
 
               <button
                 onClick={clearCart}

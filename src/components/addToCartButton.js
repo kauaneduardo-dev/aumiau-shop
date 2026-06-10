@@ -1,53 +1,26 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
+import { addProductToCart } from "@/lib/cart";
 
-export default function AddToCartButton({ product }) {
+export default function AddToCartButton({ product, className = "" }) {
   const [added, setAdded] = useState(false);
+  const buttonClassName = `inline-flex items-center justify-center rounded-lg px-6 py-3 font-semibold ${className}`;
 
   function addToCart() {
-    const savedCart = localStorage.getItem("aumiau-cart");
-    const cart = savedCart ? JSON.parse(savedCart) : [];
-
-    const productExists = cart.find((item) => item.id === product.id);
-
-    let updatedCart;
-
-    if (productExists) {
-      updatedCart = cart.map((item) =>
-        item.id === product.id
-          ? {
-              ...item,
-              quantity: item.quantity + 1,
-            }
-          : item
-      );
-    } else {
-      updatedCart = [
-        ...cart,
-        {
-          id: product.id,
-          name: product.name,
-          price: product.price,
-          image: product.image,
-          quantity: 1,
-        },
-      ];
-    }
-
-    localStorage.setItem("aumiau-cart", JSON.stringify(updatedCart));
-
+    addProductToCart(product);
     setAdded(true);
   }
 
   if (added) {
     return (
-      <a
+      <Link
         href="/carrinho"
-        className="rounded-lg bg-green-600 px-6 py-3 text-center font-semibold text-white hover:bg-green-700"
+        className={`${buttonClassName} bg-teal-600 text-center text-white hover:bg-teal-700`}
       >
         Adicionado! Ver carrinho
-      </a>
+      </Link>
     );
   }
 
@@ -55,7 +28,7 @@ export default function AddToCartButton({ product }) {
     <button
       type="button"
       onClick={addToCart}
-      className="rounded-lg bg-orange-500 px-6 py-3 font-semibold text-white hover:bg-orange-600"
+      className={`${buttonClassName} bg-orange-500 text-white hover:bg-orange-600`}
     >
       Adicionar ao carrinho
     </button>

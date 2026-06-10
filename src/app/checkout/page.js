@@ -1,24 +1,23 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useState } from "react";
+import SiteHeader from "@/components/siteHeader";
+import { useCart } from "@/hooks/useCart";
+import { getCartTotal, getCartTotalItems } from "@/lib/cart";
+import { formatCurrency } from "@/lib/format";
+
+const whatsappNumber = "5519997326163";
 
 export default function CheckoutPage() {
-  const [cart, setCart] = useState([]);
-  const [orderFinished, setOrderFinished] = useState(false);
+  const cart = useCart();
 
   const [formData, setFormData] = useState({
     name: "",
-    email: "",
     phone: "",
-    address: "",
     city: "",
+    address: "",
   });
-
-  useEffect(() => {
-    const savedCart = localStorage.getItem("aumiau-cart");
-    const parsedCart = savedCart ? JSON.parse(savedCart) : [];
-    setCart(parsedCart);
-  }, []);
 
   function handleChange(event) {
     const { name, value } = event.target;
@@ -29,23 +28,19 @@ export default function CheckoutPage() {
     });
   }
 
-  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+  const totalItems = getCartTotalItems(cart);
+  const total = getCartTotal(cart);
 
-  const total = cart.reduce((sum, item) => {
-    return sum + item.price * item.quantity;
-  }, 0);
-
-  function finishOrder(event) {
+  function finishByWhatsApp(event) {
     event.preventDefault();
 
     if (
       !formData.name ||
-      !formData.email ||
       !formData.phone ||
-      !formData.address ||
-      !formData.city
+      !formData.city ||
+      !formData.address
     ) {
-      alert("Preencha todos os campos antes de finalizar.");
+      alert("Preencha todos os campos antes de finalizar pelo WhatsApp.");
       return;
     }
 
@@ -54,73 +49,68 @@ export default function CheckoutPage() {
       return;
     }
 
+    const productsMessage = cart
+      .map((item) => {
+        const subtotal = item.price * item.quantity;
+
+        return `- ${item.name}
+Quantidade: ${item.quantity}
+Valor: ${formatCurrency(subtotal)}`;
+      })
+      .join("\n\n");
+
+    const message = `Olá! Tenho interesse em comprar produtos da AuMiau Shop.
+
+Produtos escolhidos:
+
+${productsMessage}
+
+Total de itens: ${totalItems}
+Total aproximado: ${formatCurrency(total)}
+
+Dados do cliente:
+Nome: ${formData.name}
+Telefone: ${formData.phone}
+Cidade: ${formData.city}
+Endereço: ${formData.address}
+
+Gostaria de saber como finalizar a compra.`;
+
     const order = {
+      id: `AM-WPP-${Date.now()}`,
       customer: formData,
       items: cart,
-      total: total,
+      total,
+      channel: "WhatsApp",
       createdAt: new Date().toLocaleString("pt-BR"),
     };
 
     localStorage.setItem("aumiau-last-order", JSON.stringify(order));
-    localStorage.removeItem("aumiau-cart");
 
-    setCart([]);
-    setOrderFinished(true);
-  }
-
-  if (orderFinished) {
-    return (
-      <main className="min-h-screen bg-orange-50 px-8 py-10 text-gray-900">
-        <div className="mx-auto max-w-2xl rounded-xl border border-orange-200 bg-white p-8 text-center shadow-sm">
-          <h1 className="text-4xl font-bold text-orange-500">
-            Pedido finalizado!
-          </h1>
-
-          <p className="mt-4 text-gray-600">
-            Seu pedido foi registrado com sucesso na AuMiau Shop.
-          </p>
-
-          <p className="mt-2 text-gray-600">
-            Essa ainda é uma finalização de teste. Depois vamos colocar banco de
-            dados e pagamento.
-          </p>
-
-          <a
-            href="/produtos"
-            className="mt-8 inline-block rounded-lg bg-orange-500 px-6 py-3 font-semibold text-white hover:bg-orange-600"
-          >
-            Voltar para produtos
-          </a>
-        </div>
-      </main>
+    window.open(
+      `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`,
+      "_blank",
+      "noopener,noreferrer",
     );
   }
 
   return (
     <main className="min-h-screen bg-orange-50 text-gray-900">
-      <header className="border-b border-orange-200 bg-white px-8 py-6">
-        <a
-          href="/carrinho"
-          className="text-sm text-gray-500 hover:text-orange-500"
-        >
-          ← Voltar para o carrinho
-        </a>
+      <SiteHeader backHref="/carrinho" backLabel="Voltar para o carrinho" />
 
-        <h1 className="mt-4 text-3xl font-bold text-orange-500">Checkout</h1>
-
-        <p className="mt-2 text-gray-600">
-          Preencha seus dados para finalizar o pedido.
-        </p>
-      </header>
-
-      <section className="grid grid-cols-1 gap-8 px-8 py-10 lg:grid-cols-3">
+      <section className="grid grid-cols-1 gap-8 px-5 py-10 sm:px-8 lg:grid-cols-3">
         <form
-          onSubmit={finishOrder}
-          className="rounded-xl border border-orange-200 bg-white p-6 shadow-sm lg:col-span-2"
+          onSubmit={finishByWhatsApp}
+          className="rounded-lg border border-orange-200 bg-white p-6 shadow-sm lg:col-span-2"
         >
+          <p className="font-semibold text-teal-700">Finalização</p>
           <h2 className="text-2xl font-bold text-gray-900">
-            Dados do cliente
+            Finalizar pelo WhatsApp
           </h2>
+
+          <p className="mt-2 text-gray-600">
+            Preencha seus dados e envie o pedido direto para a AuMiau Shop.
+          </p>
 
           <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
             <div>
@@ -132,20 +122,9 @@ export default function CheckoutPage() {
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
+                required
                 className="w-full rounded-lg border border-orange-200 px-4 py-3 outline-none focus:border-orange-500"
                 placeholder="Digite seu nome"
-              />
-            </div>
-
-            <div>
-              <label className="mb-1 block font-semibold">E-mail</label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                className="w-full rounded-lg border border-orange-200 px-4 py-3 outline-none focus:border-orange-500"
-                placeholder="seuemail@gmail.com"
               />
             </div>
 
@@ -156,6 +135,7 @@ export default function CheckoutPage() {
                 name="phone"
                 value={formData.phone}
                 onChange={handleChange}
+                required
                 className="w-full rounded-lg border border-orange-200 px-4 py-3 outline-none focus:border-orange-500"
                 placeholder="(19) 99999-9999"
               />
@@ -168,18 +148,20 @@ export default function CheckoutPage() {
                 name="city"
                 value={formData.city}
                 onChange={handleChange}
+                required
                 className="w-full rounded-lg border border-orange-200 px-4 py-3 outline-none focus:border-orange-500"
                 placeholder="Sua cidade"
               />
             </div>
 
-            <div className="md:col-span-2">
+            <div>
               <label className="mb-1 block font-semibold">Endereço</label>
               <input
                 type="text"
                 name="address"
                 value={formData.address}
                 onChange={handleChange}
+                required
                 className="w-full rounded-lg border border-orange-200 px-4 py-3 outline-none focus:border-orange-500"
                 placeholder="Rua, número e bairro"
               />
@@ -188,19 +170,32 @@ export default function CheckoutPage() {
 
           <button
             type="submit"
-            className="mt-8 w-full rounded-lg bg-orange-500 px-6 py-3 font-semibold text-white hover:bg-orange-600"
+            className="mt-8 w-full rounded-lg bg-teal-600 px-6 py-3 font-semibold text-white hover:bg-teal-700"
           >
-            Confirmar pedido
+            Enviar pedido pelo WhatsApp
           </button>
+
+          <p className="mt-4 text-sm text-gray-500">
+            O pagamento e a confirmação serão combinados pelo WhatsApp.
+          </p>
         </form>
 
-        <aside className="h-fit rounded-xl border border-orange-200 bg-white p-6 shadow-sm">
+        <aside className="h-fit rounded-lg border border-orange-200 bg-white p-6 shadow-sm">
           <h2 className="text-2xl font-bold text-gray-900">
             Resumo do pedido
           </h2>
 
           {cart.length === 0 ? (
-            <p className="mt-4 text-gray-600">Seu carrinho está vazio.</p>
+            <div>
+              <p className="mt-4 text-gray-600">Seu carrinho está vazio.</p>
+
+              <Link
+                href="/produtos"
+                className="mt-6 inline-block rounded-lg bg-orange-500 px-6 py-3 font-semibold text-white hover:bg-orange-600"
+              >
+                Ver produtos
+              </Link>
+            </div>
           ) : (
             <div className="mt-4 space-y-4">
               {cart.map((item) => (
@@ -212,10 +207,7 @@ export default function CheckoutPage() {
                   </p>
 
                   <p className="font-semibold text-orange-500">
-                    R${" "}
-                    {(item.price * item.quantity)
-                      .toFixed(2)
-                      .replace(".", ",")}
+                    {formatCurrency(item.price * item.quantity)}
                   </p>
                 </div>
               ))}
@@ -225,7 +217,7 @@ export default function CheckoutPage() {
               </p>
 
               <p className="text-3xl font-bold text-orange-500">
-                R$ {total.toFixed(2).replace(".", ",")}
+                {formatCurrency(total)}
               </p>
             </div>
           )}
