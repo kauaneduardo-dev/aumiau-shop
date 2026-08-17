@@ -8,6 +8,7 @@ const navigation = [
   { href: "/", label: "Início" },
   { href: "/produtos", label: "Produtos" },
   { href: "/carrinho", label: "Carrinho" },
+  { href: "/login", label: "Entrar" },
 ];
 
 export default function SiteHeader({ backHref, backLabel }) {
