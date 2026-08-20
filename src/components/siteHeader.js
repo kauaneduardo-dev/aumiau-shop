@@ -120,9 +120,12 @@ export default function SiteHeader({ backHref, backLabel }) {
 
           {!carregandoUsuario && usuario ? (
             <div className="flex items-center gap-3">
-              <span className="text-teal-700">
-                Olá, {primeiroNome}
-              </span>
+              <Link
+  href="/minha-conta"
+  className="text-teal-700 hover:text-teal-800"
+>
+  Olá, {primeiroNome}
+</Link>
 
               <button
                 type="button"
