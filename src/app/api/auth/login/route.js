@@ -1,6 +1,11 @@
 import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
 import pool from "@/lib/db";
+import {
+  criarTokenSessao,
+  SESSION_COOKIE_NAME,
+  SESSION_MAX_AGE,
+} from "@/lib/session";
 
 export const runtime = "nodejs";
 
@@ -31,7 +36,6 @@ export async function POST(request) {
     }
 
     const usuario = usuarios[0];
-
     const senhaCorreta = await bcrypt.compare(
       senha,
       usuario.senha_hash,
@@ -44,14 +48,30 @@ export async function POST(request) {
       );
     }
 
-    return NextResponse.json({
+    const usuarioSeguro = {
+      id: usuario.id,
+      nome: usuario.nome,
+      email: usuario.email,
+    };
+
+    const token = await criarTokenSessao(usuarioSeguro);
+
+    const resposta = NextResponse.json({
       message: "Login realizado com sucesso!",
-      user: {
-        id: usuario.id,
-        nome: usuario.nome,
-        email: usuario.email,
-      },
+      user: usuarioSeguro,
     });
+
+    resposta.cookies.set({
+      name: SESSION_COOKIE_NAME,
+      value: token,
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: SESSION_MAX_AGE,
+    });
+
+    return resposta;
   } catch (erro) {
     console.error("Erro ao realizar login:", erro);
 

@@ -1,10 +1,16 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import { CART_STORAGE_KEY, CART_UPDATED_EVENT, getCart } from "@/lib/cart";
+import {
+  CART_STORAGE_KEY,
+  CART_UPDATED_EVENT,
+  getCart,
+} from "@/lib/cart";
+
+const emptyCartSnapshot = [];
 
 let lastSavedCart = null;
-let lastCartSnapshot = [];
+let lastCartSnapshot = emptyCartSnapshot;
 
 function subscribeToCart(callback) {
   window.addEventListener(CART_UPDATED_EVENT, callback);
@@ -17,7 +23,15 @@ function subscribeToCart(callback) {
 }
 
 export function useCart() {
-  return useSyncExternalStore(subscribeToCart, getCartSnapshot, () => []);
+  return useSyncExternalStore(
+    subscribeToCart,
+    getCartSnapshot,
+    getServerCartSnapshot,
+  );
+}
+
+function getServerCartSnapshot() {
+  return emptyCartSnapshot;
 }
 
 function getCartSnapshot() {

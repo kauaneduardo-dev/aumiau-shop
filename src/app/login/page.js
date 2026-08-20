@@ -27,12 +27,17 @@ export default function LoginPage() {
       const dados = await resposta.json().catch(() => ({}));
 
       if (!resposta.ok) {
-        throw new Error(dados.message || "Não foi possível entrar.");
+        throw new Error(
+          dados.message || "Não foi possível entrar.",
+        );
       }
 
       setMensagem("Login realizado com sucesso!");
+      window.location.href = "/";
     } catch (erro) {
-      setMensagem(erro.message || "Não foi possível entrar.");
+      setMensagem(
+        erro.message || "Não foi possível entrar.",
+      );
     } finally {
       setCarregando(false);
     }
@@ -40,13 +45,20 @@ export default function LoginPage() {
 
   return (
     <main className="min-h-screen bg-orange-50 text-gray-900">
-      <SiteHeader backHref="/" backLabel="Voltar para o início" />
+      <SiteHeader
+        backHref="/"
+        backLabel="Voltar para o início"
+      />
 
       <section className="flex items-center justify-center px-5 py-12">
         <div className="w-full max-w-md rounded-2xl border border-orange-200 bg-white p-7 shadow-sm sm:p-9">
-          <p className="font-semibold text-teal-700">Área do cliente</p>
+          <p className="font-semibold text-teal-700">
+            Área do cliente
+          </p>
 
-          <h1 className="mt-2 text-3xl font-bold">Entre na sua conta</h1>
+          <h1 className="mt-2 text-3xl font-bold">
+            Entre na sua conta
+          </h1>
 
           <p className="mt-2 text-gray-600">
             Acesse sua conta para acompanhar seus dados e pedidos.
@@ -66,7 +78,9 @@ export default function LoginPage() {
                 name="email"
                 type="email"
                 value={email}
-                onChange={(event) => setEmail(event.target.value)}
+                onChange={(event) =>
+                  setEmail(event.target.value)
+                }
                 placeholder="seuemail@exemplo.com"
                 autoComplete="email"
                 required
@@ -87,7 +101,9 @@ export default function LoginPage() {
                 name="senha"
                 type="password"
                 value={senha}
-                onChange={(event) => setSenha(event.target.value)}
+                onChange={(event) =>
+                  setSenha(event.target.value)
+                }
                 placeholder="Digite sua senha"
                 autoComplete="current-password"
                 required
